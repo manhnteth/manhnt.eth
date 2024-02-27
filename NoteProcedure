@@ -1,0 +1,74 @@
+-----------------------------------------------------------------------------------------------------------
+THÔNG TIN THUÊ BAO
+	+ Tập thuê bao DUMP_IN map thêm các thông tin trên bộ IN đấy(Có hàng ngày đầu h sáng)
+		- Lấy thông tin trên TCQLKH(MNP)
+		- Bổ sung thêm thông tin thiết bị ADC Dump
+		- Map các dimension gắn với thuê bao
+	 
+		BUS_TYPE='VI2' ko phải là KHDN, nhưng nếu nhân viên phát triển là KHDN phát triển thuê bao đấy thì là KHDN
+
+		- KHDN
+		 + 1 tập < 01062019
+		   union
+		   các KHDN phát triển mới > 01062019
+		   
+------------------------------------------------------------------------------------------------------------
+THUÊ BAO 3K3D
+	- Mỗi tháng ra tập thuê bao 3k3d mới
+	- 3k3d chạy hàng tháng
+	- Chạy tạm tính hàng ngày từ đầu tháng đến ngày hiện tại, xác định thuê bao có hoạt động không(xác định thuê bao thực or thuê bao nuôi sim)
+	- 3K - Doanh thu trong tháng
+	- 3D - VLR có bật máy
+	- Vị trí lấy theo vị trí phát sinh cước
+
+------------------------------------------------------------------------------------------------------------
+TỔNG HỢP LƯU LƯỢNG THEO THUÊ BAO(GGSN,MSC)
+	+ Cần phân chia hướng CALL_TYPE(Enrich MSC Lưu lượng ngoại mạng, nội mạng, quốc tế - Đi, đến)
+	+ Phân hướng như thế nào
+	- Lưu lượng data,voice,sms theo gói(Chi tiết thêm khi làm)
+
+------------------------------------------------------------------------------------------------------------
+NẠP THẺ 
+	- Vị trí
+		+ Làm giàu vị trí cell nạp thẻ dựa vào bản tin trên MSC(Lấy bản tin chênh lệch nhau 30s)
+		+
+		+ Cell không xác định(null) thì lấy khu vực lưu trú ngày của thuê bao
+	- Map thông tin thuê bao
+	- Loại thẻ
+		+ EZ, AirTIme - Map người bắn tiền, nạp tiền(Thông tin trên bán hàng tập chung)
+		+ Thẻ cào: Xác định người bán thẻ
+
+	Bán ĐH x(Gồm nhiều thẻ cào) -> cần biết những thẻ nào đã dùng, chưa dùng
+
+------------------------------------------------------------------------------------------------------------
+DOANH THU TÀI KHOẢN CHÍNH
+	- THEO CELL
+		+ Chỉ có CELL_ID cho thoại, data => Cập nhật cell_id cho tất cả các icc_type còn lại
+		+ Tạo bộ từ điển cell- huyện/tỉnh/công ty
+			- CELL 2G,3G(Thoai - icc, msc)
+			- CELL 4G(Data icc, msc)
+		+ Mượn tiền: trừu 110k nhưng doanh thu chỉ đc 10k
+		+ Hết tiền: A->B nội mạng, A hết tiền B gọi lại hết 5k thì tiền đấy cho vào doanh thu tiêu dùng thuê bao
+		- Trạm 2G,3G mới có location
+		- Trạm 4G - Theo quy hoạch TAC xác định tỉnh CGI_4G -> Cell TTML -> Tỉnh, Huyện 
+		- Những thuê bao CVQT ko xác định đc cell thì từ 1->4 sẽ dùng vị trí thuê bao tháng n-2(Vì chưa tổng hợp), > ngày 4 thì lấy tháng n-1
+		- Doanh thu mà không xác định được tỉnh thành quận huyện thì sẽ phân về theo tỉ lệ
+		- Doanh thu trả sau lấy từ nguồn tính cước
+		- Doanh thu chuyển vùng QT giữ nguyên
+		- Doanh thu còn lại * 1.1
+		***********************************************		
+
+	- THEO THUÊ BAO
+		+ Nhiều bảng ICC
+		+ Thuê bao yêu cầu dịch vụ trừ tiền luôn -> Bù tiền(Lấy từ nguồn bù tiền có ngày -> khớp)
+			. Bù tiền CP(Có bảng tìm theo ngày)
+			. Google Play(Lúc bù tiền có ID trừ tiền trên ICC)
+		+ Bản tin CDR kéo dài tối đa 4 ngày, nên ngày n-4 phải tổng hợp lai doanh thu cho ngày n
+		+ Xác định vị trí thuê bao theo ngày
+		+ Map thông tin thuê bao
+ 
+VỊ TRÍ LƯU TRÚ
+	+ Xác định tỉnh trước -> Xong xác định đến huyện
+	+ Ưu tiên thoại trước nếu các tỉnh có count vị trí bằng nhau
+
+

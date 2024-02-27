@@ -1,0 +1,35 @@
+sudo /opt/cloudera/cm/schema/scm_prepare_database.sh mysql -h localhost scm scm
+
+--CLOUDERA MANAGER
+sudo service cloudera-scm-server start
+sudo service cloudera-scm-server stop
+sudo service cloudera-scm-server restart
+
+sudo systemctl start cloudera-scm-server
+sudo tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log
+
+--MYSQL
+root/123456
+root/Root@123
+
+mysql -u root -p
+service mysqld start
+service mysqld restart
+service mysqld status
+
+--COPY LIB MYSQL CONNECTOR
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.tar.gz
+tar zxvf mysql-connector-java-5.1.46.tar.gz
+sudo cp mysql-connector-java-5.1.46-bin.jar /usr/share/java/mysql-connector-java.jar
+
+--HƯỚNG DẪN PHÂN BỔ YARN(RAM, CPU)
+https://stackoverflow.com/questions/43214762/how-to-solve-yarn-container-sizing-issue-on-spark
+
+--UNISTALL
+https://docs.cloudera.com/documentation/enterprise/6/6.3/topics/cm_ig_uninstall_cm.html
+--INSTALL
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.6/installation/topics/cdpdc-install-cm-packages2.html\
+
+--Cai dat MYSQL from RPM
+https://www.programmersought.com/article/2306994682/
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Root@123';
